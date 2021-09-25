@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BancoAPI.Context;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.Swagger;
 
 namespace BancoAPI
 {
@@ -33,6 +34,21 @@ namespace BancoAPI
                 options.UseSqlServer(Configuration.GetConnectionString("MyConnection"));
             });
 
+
+            Microsoft.OpenApi.Models.OpenApiInfo oa = new Microsoft.OpenApi.Models.OpenApiInfo();
+            oa.Title = "Teste da Ellen Swagger";
+            oa.Version = "V1";
+            oa.Description = "Teste Swagger EF";
+            oa.Contact = new Microsoft.OpenApi.Models.OpenApiContact
+            {
+                Name = "Ellen Santos",
+                Url = new Uri("https://github.com/ellenengineer")
+            };
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", oa);
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +68,13 @@ namespace BancoAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.RoutePrefix = "swagger";
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Demo JWT Api");
             });
         }
     }
